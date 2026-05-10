@@ -1,148 +1,151 @@
-# 🎙 EmoSense AI — Voice Emotion Detection
+# ✈️ Traveloop – Personalized Travel Planning Made Easy
 
-> Record your voice. Understand your emotion. Get intelligent feedback.
+> Built for the Odoo Hackathon 2025
 
-EmoSense AI is a full-stack machine learning web application that detects human emotions from voice recordings in real time. It uses a trained neural network on the RAVDESS dataset to classify 8 emotions from audio features extracted using Librosa.
+Traveloop is a full-stack travel planning platform that empowers users to dream, design, and organize trips with ease. Plan multi-city itineraries, track budgets, manage packing lists, and share trips with friends — all in one place.
 
 ---
 
 ## 🚀 Live Demo
 
-> Run locally — see setup instructions below.
+- **Frontend:** http://localhost:5173
+- **Backend API:** http://localhost:3000
+- **Demo Login:** `demo@traveloop.com` / `demo1234`
 
 ---
 
-## 📸 Screenshot
+## 📸 Features
 
-![EmoSense AI Screenshot](static/screenshot.png)
-
----
-
-## 🧠 How It Works
-
-1. User records their voice via the browser microphone
-2. Audio is sent to a Flask REST API as a `.webm` file
-3. Backend extracts **MFCC**, **Chroma**, and **Mel Spectrogram** features using Librosa
-4. Features are scaled and passed to a trained **MLPClassifier** neural network
-5. Detected emotion and personalized feedback are returned as JSON
-6. Frontend displays the result instantly
-
----
-
-## 🎯 Model Performance
-
-| Metric | Value |
-|--------|-------|
-| Dataset | RAVDESS (24 actors, 1440 audio files) |
-| Features | MFCC (40) + Chroma (12) + Mel Spectrogram (128) = 180 features |
-| Model | MLPClassifier — hidden layers (256, 128) |
-| Accuracy | **72.92%** on 20% test split |
-| Emotions | Neutral, Calm, Happy, Sad, Angry, Fearful, Disgust, Surprised |
+| Screen | Description |
+|--------|-------------|
+| 🔐 Login / Signup | Secure JWT-based authentication |
+| 🏠 Dashboard | Overview of trips + destination inspiration |
+| 🗺️ Itinerary Builder | Add cities, stops, and activities day-by-day |
+| 📋 Itinerary View | Timeline view of full trip plan |
+| 💰 Budget Tracker | Cost breakdown by category with visual bars |
+| 🎒 Packing Checklist | Per-trip checklist with categories |
+| 📝 Trip Notes | Save reminders and details per trip |
+| 🔗 Shared Itinerary | Public shareable link for any trip |
+| 👤 Profile | Manage account settings |
 
 ---
 
 ## 🛠️ Tech Stack
 
-| Layer | Technology |
-|-------|-----------|
-| Frontend | HTML, CSS, JavaScript (Web Audio API) |
-| Backend | Python, Flask, Flask-CORS |
-| ML / Audio | Librosa, Scikit-learn, NumPy |
-| Model | MLPClassifier (scikit-learn) |
-| Audio Processing | ffmpeg, soundfile |
+**Frontend**
+- React 18 + Vite
+- Tailwind CSS
+- React Router DOM
+- Axios
+
+**Backend**
+- Node.js + Express
+- Prisma ORM
+- SQLite (relational database)
+- JWT Authentication
+- bcryptjs
 
 ---
 
 ## 📁 Project Structure
 
 ```
-voice_emotion_app/
-├── app.py                  # Flask application entry point
-├── config.py               # Path configuration
-├── requirements.txt        # Python dependencies
-├── .env                    # Environment variables
-├── .gitignore
+traveloop/
+├── client/               # React Frontend
+│   ├── src/
+│   │   ├── pages/        # All 13 screens
+│   │   ├── components/   # Reusable UI components
+│   │   ├── context/      # Auth context
+│   │   └── api/          # Axios instance
+│   └── ...
 │
-├── models/
-│   ├── model.pkl           # Trained MLPClassifier
-│   └── scaler.pkl          # StandardScaler
-│
-├── services/
-│   ├── emotion_service.py  # Prediction logic
-│   └── feedback_service.py # Feedback generation
-│
-├── utils/
-│   └── audio_features.py   # MFCC/Chroma/Mel extraction
-│
-├── templates/
-│   └── index.html          # Frontend UI
-│
-└── training/
-    ├── train_model.py       # Model training script
-    └── preprocessing.py    # Feature extraction from RAVDESS
+└── server/               # Express Backend
+    ├── src/
+    │   ├── routes/       # API route handlers
+    │   ├── middleware/   # JWT auth middleware
+    │   └── lib/          # Prisma client
+    ├── prisma/
+    │   ├── schema.prisma # Database schema
+    │   └── seed.js       # Demo data
+    └── ...
 ```
 
 ---
 
-## ⚙️ Setup & Run Locally
+## 🗄️ Database Schema
+
+Built with a fully relational database (SQLite via Prisma):
+
+```
+User → Trip → Stop → Activity
+               ↓
+          BudgetItem
+          PackingItem
+          Note
+```
+
+Key relationships:
+- One user can have many trips
+- Each trip has multiple city stops (ordered)
+- Each stop has multiple activities with cost tracking
+- Trips have budget items, packing lists, and notes
+
+---
+
+## ⚙️ Setup & Installation
 
 ### Prerequisites
-- Python 3.10+
-- ffmpeg installed (`brew install ffmpeg` on Mac)
+- Node.js 18+
+- npm
 
-### Steps
-
+### 1. Clone the repo
 ```bash
-# 1. Clone the repository
-git clone https://github.com/sakibraza07/emosense-ai.git
-cd emosense-ai
-
-# 2. Install Python dependencies
-pip3 install -r requirements.txt
-
-# 3. Run the Flask server
-python3 app.py
-
-# 4. Open in browser
-# Go to http://127.0.0.1:5000
+git clone https://github.com/YOUR_USERNAME/traveloop.git
+cd traveloop
 ```
 
----
-
-## 🔁 Retrain the Model (Optional)
-
-If you want to retrain using your own RAVDESS dataset:
-
+### 2. Setup Backend
 ```bash
-# Step 1 — Extract features from dataset
-python3 training/preprocessing.py
-
-# Step 2 — Train and save the model
-python3 training/train_model.py
+cd server
+npm install
+cp .env.example .env       # Add your JWT_SECRET
+npx prisma migrate dev --name init
+node prisma/seed.js        # Load demo data
+npm run dev                # Runs on http://localhost:3000
 ```
 
-> ⚠️ The RAVDESS dataset is NOT included in this repo. Download it from [Zenodo](https://zenodo.org/record/1188976).
+### 3. Setup Frontend
+```bash
+cd client
+npm install
+npm run dev                # Runs on http://localhost:5173
+```
+
+### 4. Open the app
+Visit **http://localhost:5173** and login with:
+- Email: `demo@traveloop.com`
+- Password: `demo1234`
 
 ---
 
-## 🌱 Future Improvements
+## 🔌 API Endpoints
 
-- [ ] Add user authentication and history tracking
-- [ ] Deploy to cloud (Render / Railway)
-- [ ] Improve model accuracy with deep learning (CNN on spectrograms)
-- [ ] Add real-time streaming emotion detection
-- [ ] Support multiple languages
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/auth/signup` | Register user |
+| POST | `/auth/login` | Login, returns JWT |
+| GET | `/trips` | Get all user trips |
+| POST | `/trips` | Create new trip |
+| GET | `/trips/:id` | Get trip with stops + activities |
+| POST | `/trips/:id/stops` | Add city stop |
+| POST | `/stops/:id/activities` | Add activity to stop |
+| GET | `/trips/:id/budget` | Get budget breakdown |
+| GET | `/trips/:id/packing` | Get packing list |
+| PATCH | `/packing/:id/toggle` | Toggle item packed |
+| GET | `/share/:token` | Public shared itinerary |
 
 ---
 
-## 👤 Author
+## 👥 Team
 
-**Sakib Raza**  
-B.Tech Computer Science & Engineering  
-GitHub: [@sakibraza07](https://github.com/sakibraza07)
-
----
-
-## 📄 License
-
-This project is open source and available under the [MIT License](LICENSE).
+Built with ❤️ for the Odoo Hackathon 2025
