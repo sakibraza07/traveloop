@@ -1,0 +1,99 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int      @id @default(autoincrement())
+  name         String
+  email        String   @unique
+  passwordHash String
+  photo        String?
+  language     String   @default("en")
+  createdAt    DateTime @default(now())
+
+  trips Trip[]
+}
+
+model Trip {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  name        String
+  description String?
+  coverPhoto  String?
+  startDate   DateTime
+  endDate     DateTime
+  isPublic    Boolean  @default(false)
+  shareToken  String?  @unique
+  createdAt   DateTime @default(now())
+
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  stops        Stop[]
+  budgetItems  BudgetItem[]
+  packingItems PackingItem[]
+  notes        Note[]
+}
+
+model Stop {
+  id         Int      @id @default(autoincrement())
+  tripId     Int
+  city       String
+  country    String
+  startDate  DateTime
+  endDate    DateTime
+  orderIndex Int      @default(0)
+
+  trip       Trip       @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  activities Activity[]
+  notes      Note[]
+}
+
+model Activity {
+  id              Int       @id @default(autoincrement())
+  stopId          Int
+  name            String
+  type            String    @default("sightseeing")
+  cost            Float     @default(0)
+  durationMinutes Int?
+  description     String?
+  imageUrl        String?
+  scheduledAt     DateTime?
+
+  stop Stop @relation(fields: [stopId], references: [id], onDelete: Cascade)
+}
+
+model BudgetItem {
+  id       Int    @id @default(autoincrement())
+  tripId   Int
+  category String
+  label    String
+  amount   Float
+
+  trip Trip @relation(fields: [tripId], references: [id], onDelete: Cascade)
+}
+
+model PackingItem {
+  id       Int     @id @default(autoincrement())
+  tripId   Int
+  name     String
+  category String  @default("other")
+  isPacked Boolean @default(false)
+
+  trip Trip @relation(fields: [tripId], references: [id], onDelete: Cascade)
+}
+
+model Note {
+  id        Int      @id @default(autoincrement())
+  tripId    Int
+  stopId    Int?
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  trip Trip  @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  stop Stop? @relation(fields: [stopId], references: [id])
+}
