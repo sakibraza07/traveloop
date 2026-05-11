@@ -1,6 +1,6 @@
 # ✈️ Traveloop – Personalized Travel Planning Made Easy
 
-> Built for the Odoo Hackathon 2025
+> Built for the Odoo Hackathon 2026
 
 Traveloop is a full-stack travel planning platform that empowers users to dream, design, and organize trips with ease. Plan multi-city itineraries, track budgets, manage packing lists, and share trips with friends — all in one place.
 
@@ -148,4 +148,4 @@ Visit **http://localhost:5173** and login with:
 
 ## 👥 Team
 
-Built with ❤️ for the Odoo Hackathon 2025
+Built with ❤️ for the Odoo Hackathon 2026
